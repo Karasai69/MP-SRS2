@@ -14,7 +14,7 @@ with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3407/3407024.png", width=100)
     st.title("О проекте")
     st.info("Эта система использует ИИ-агентов для анализа апелляций.")
-    st.write("Когнитивное ядро: **Gemini 1.5 Flash**")
+    st.write("Когнитивное ядро: **Gemini 3 Flash Preview**")
 
 st.header("📝 Форма подачи апелляции")
 
