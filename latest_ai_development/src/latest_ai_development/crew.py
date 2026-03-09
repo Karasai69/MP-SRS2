@@ -1,7 +1,35 @@
 import os
+from turtle import st
+
 import yaml
 from dotenv import load_dotenv
 from crewai import Agent, Crew, Task, Process, LLM
+
+st.set_page_config(page_title="Appeal System AI", page_icon="🎓", layout="centered")
+
+# Боковая панель с инструкцией
+with st.sidebar:
+    st.image("https://cdn-icons-png.flaticon.com/512/3407/3407024.png", width=100)
+    st.title("О проекте")
+    st.info("Эта система использует мультиагентную сеть для беспристрастной оценки апелляций студентов.")
+    st.markdown("---")
+    st.write("Когнитивное ядро: **Gemini 3 Flash Preview**")
+
+st.header("📝 Форма подачи апелляции")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    student_name = st.text_input("👤 Имя студента", placeholder="Иван Иванов")
+    exam = st.text_input("📚 Дисциплина", placeholder="Программирование")
+
+with col2:
+    grade = st.number_input("💯 Текущий балл", 0, 100, step=1)
+    # Можно добавить выбор типа экзамена
+    type_exam = st.selectbox("Тип контроля", ["Экзамен", "РК1", "РК2", "СРС"])
+
+reason = st.text_area("🔍 Обоснование апелляции", placeholder="Опишите, с чем вы не согласны...")
+
 
 # Загружаем ключи из .env для стабильного подключения к API
 load_dotenv()
