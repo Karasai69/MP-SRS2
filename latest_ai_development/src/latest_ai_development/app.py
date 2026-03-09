@@ -2,10 +2,8 @@ import streamlit as st
 import os
 import sys
 
-# 1. Настройка страницы (строго первая команда)
 st.set_page_config(page_title="Appeal System AI", page_icon="🎓", layout="centered")
 
-# 2. Исправление путей для импорта
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from crew import AppealCrew
 
@@ -15,13 +13,12 @@ with st.sidebar:
     st.title("О проекте")
     st.info("Мультиагентная система для анализа академических апелляций.")
     st.markdown("---")
-    st.write("Ядро: **Gemini 1.5 Flash**")
+    st.write("Ядро: **Gemini 3 Flash Preview**")
 
 # --- ГЛАВНЫЙ ИНТЕРФЕЙС ---
 st.title("🎓 Система апелляций")
 st.markdown("Заполните форму ниже для автоматического разбора вашего случая комиссией ИИ-агентов.")
 
-# Красивая форма в колонках
 with st.container():
     col1, col2 = st.columns(2)
     with col1:
@@ -33,7 +30,6 @@ with st.container():
 
     reason = st.text_area("🔍 Обоснование апелляции", placeholder="Опишите ваши аргументы...")
 
-# Кнопка запуска
 if st.button("🚀 Отправить на рассмотрение", use_container_width=True):
     if not reason or not student_name or not exam:
         st.error("Ошибка: Заполните все обязательные поля!")
