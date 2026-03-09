@@ -1,5 +1,10 @@
 import streamlit as st
 from crew import AppealCrew
+import sys
+import os
+
+# Добавляем текущую директорию в пути поиска модулей
+sys.path.append(os.path.dirname(__file__))
 
 st.title("Система апелляций экзамена")
 
