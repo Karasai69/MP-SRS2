@@ -1,73 +1,62 @@
 import streamlit as st
-from crew import AppealCrew
-import sys
 import os
+import sys
 
+# 1. Настройка страницы (строго первая команда)
 st.set_page_config(page_title="Appeal System AI", page_icon="🎓", layout="centered")
 
-# Исправляем импорт crew
+# 2. Исправление путей для импорта
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from crew import AppealCrew
 
-# --- ИНТЕРФЕЙС ---
+# --- БОКОВАЯ ПАНЕЛЬ ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3407/3407024.png", width=100)
     st.title("О проекте")
-    st.info("Эта система использует ИИ-агентов для анализа апелляций.")
-    st.write("Когнитивное ядро: **Gemini 3 Flash Preview**")
+    st.info("Мультиагентная система для анализа академических апелляций.")
+    st.markdown("---")
+    st.write("Ядро: **Gemini 1.5 Flash**")
 
-st.header("📝 Форма подачи апелляции")
+# --- ГЛАВНЫЙ ИНТЕРФЕЙС ---
+st.title("🎓 Система апелляций")
+st.markdown("Заполните форму ниже для автоматического разбора вашего случая комиссией ИИ-агентов.")
 
-col1, col2 = st.columns(2)
-with col1:
-    student_name = st.text_input("👤 Имя студента", placeholder="Иван Иванов")
-    exam = st.text_input("📚 Дисциплина", placeholder="Программирование")
-with col2:
-    grade = st.number_input("💯 Текущий балл", 0, 100, value=50)
-    type_exam = st.selectbox("Тип контроля", ["Экзамен", "РК1", "РК2", "СРС"])
+# Красивая форма в колонках
+with st.container():
+    col1, col2 = st.columns(2)
+    with col1:
+        student_name = st.text_input("👤 Имя студента", placeholder="Аскар Карасай")
+        exam = st.text_input("📚 Дисциплина", placeholder="Программирование")
+    with col2:
+        grade = st.number_input("💯 Текущий балл", 0, 100, value=50)
+        type_exam = st.selectbox("Тип контроля", ["Экзамен", "РК1", "РК2", "СРС"])
 
-reason = st.text_area("🔍 Обоснование апелляции")
+    reason = st.text_area("🔍 Обоснование апелляции", placeholder="Опишите ваши аргументы...")
 
+# Кнопка запуска
 if st.button("🚀 Отправить на рассмотрение", use_container_width=True):
-    if not reason or not student_name:
-        st.warning("Пожалуйста, заполните все поля!")
+    if not reason or not student_name or not exam:
+        st.error("Ошибка: Заполните все обязательные поля!")
     else:
-        with st.status("🤖 Агенты обсуждают ваше решение...", expanded=True) as status:
-            crew_instance = AppealCrew()
-            result = crew_instance.crew().kickoff(
-                inputs={
-                    "student_name": student_name,
-                    "exam": exam,
-                    "grade": grade,
-                    "appeal_reason": reason
-                }
-            )
-            status.update(label="✅ Решение принято!", state="complete")
-
-        st.subheader("🏁 Итоговое решение комиссии")
-        st.success(result)
-sys.path.append(os.path.dirname(__file__))
-
-st.title("Система апелляций экзамена")
-
-student_name = st.text_input("Имя студента")
-exam = st.text_input("Экзамен")
-grade = st.number_input("Оценка", 0, 100)
-reason = st.text_area("Причина апелляции")
-
-if st.button("Отправить апелляцию"):
-
-    crew_instance = AppealCrew()
-    crew = crew_instance.crew()
-
-    result = crew.kickoff(
-        inputs={
-            "student_name": student_name,
-            "exam": exam,
-            "grade": grade,
-            "appeal_reason": reason
-        }
-    )
-
-    st.subheader("Решение комиссии")
-    st.write(result)
+        # Статус-бар работы агентов
+        with st.status("🤖 Агенты анализируют данные...", expanded=True) as status:
+            try:
+                crew_instance = AppealCrew()
+                # Запуск процесса
+                result = crew_instance.crew().kickoff(
+                    inputs={
+                        "student_name": student_name,
+                        "exam": f"{exam} ({type_exam})",
+                        "grade": grade,
+                        "appeal_reason": reason
+                    }
+                )
+                status.update(label="✅ Анализ завершен!", state="complete", expanded=False)
+                
+                # Вывод результата
+                st.subheader("🏁 Итоговое решение комиссии")
+                st.success(result)
+                
+            except Exception as e:
+                status.update(label="❌ Произошла ошибка", state="error")
+                st.error(f"Ошибка при работе агентов: {e}")
