@@ -1,11 +1,7 @@
 import os
-
-
 import yaml
 from dotenv import load_dotenv
 from crewai import Agent, Crew, Task, Process, LLM
-
-st.set_page_config(page_title="Appeal System AI", page_icon="🎓", layout="centered")
 
 # Боковая панель с инструкцией
 with st.sidebar:
